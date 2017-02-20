@@ -1,0 +1,62 @@
+{
+    "builders": [
+        {
+            "type": "qemu",
+            "iso_url": "http://ftp.tudelft.nl/centos.org/6.8/isos/x86_64/CentOS-6.8-x86_64-netinstall.iso",
+            "iso_checksum": "56d9cc5757ed1443af7b321967622a108978328f72e58050d31bcf1998dfd162",
+            "iso_checksum_type": "sha256",
+            "output_directory": "packer_output",
+            "ssh_wait_timeout": "15m",
+            "shutdown_command": "systemctl poweroff",
+            "disk_size": "8192",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "headless": "true",
+            "qemuargs": [
+                [
+                    "-smp",
+                    "4"
+                ],
+                [
+                    "-m",
+                    "1024M"
+                ]
+            ],
+            "http_directory": "httpdir",
+            "http_port_min": 10082,
+            "http_port_max": 10089,
+            "ssh_host_port_min": 2222,
+            "ssh_host_port_max": 2229,
+            "ssh_username": "root",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "vm_name": "centos6",
+            "net_device": "virtio-net",
+            "disk_interface": "virtio-scsi",
+            "disk_cache": "unsafe",
+            "disk_discard": "unmap",
+            "disk_compression": true,
+            "boot_command": [
+                "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/centos68.ks<enter><wait>"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "files/cloud.cfg",
+            "destination": "/etc/cloud/cloud.cfg"
+        },
+        {
+            "type": "file",
+            "source": "files/99_cloudstack.cfg",
+            "destination": "/etc/cloud/cloud.cfg.d/99_cloudstack.cfg"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "fstrim -v /"
+            ]
+        }
+    ]
+}
