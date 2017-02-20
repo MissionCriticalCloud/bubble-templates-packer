@@ -1,7 +1,11 @@
 skipx
 install
 text
+cdrom
+
+firstboot --disabled
 reboot
+
 lang en_US.UTF-8
 keyboard us
 timezone --utc GMT
