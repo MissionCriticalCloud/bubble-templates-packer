@@ -22,7 +22,7 @@
                     "1024M"
                 ]
             ],
-            "http_directory": "../../httpdir",
+            "http_directory": "httpdir",
             "http_port_min": 10082,
             "http_port_max": 10089,
             "ssh_host_port_min": 2222,
@@ -42,6 +42,16 @@
         }
     ],
     "provisioners": [
+        {
+            "type": "file",
+            "source": "files/cloud.cfg",
+            "destination": "/etc/cloud/cloud.cfg"
+        },
+        {
+            "type": "file",
+            "source": "files/99_cloudstack.cfg",
+            "destination": "/etc/cloud/cloud.cfg.d/99_cloudstack.cfg"
+        },
         {
             "type": "shell",
             "inline": [

@@ -1,6 +1,10 @@
 skipx
 install
 text
+reboot
+lang en_US.UTF-8
+keyboard us
+timezone --utc GMT
 
 ################
 # REPOSITORIES #
@@ -34,12 +38,12 @@ network --onboot yes --device=eth0 --bootproto=dhcp
 zerombr
 clearpart --initlabel --all
 part / --size=1024 --grow --fstype ext4 --asprimary
-bootloader --location=mbr --driveorder=vda
+bootloader --location=mbr --driveorder=vda --append="console=ttyS0,115200"
 
 ############
 # PACKAGES #
 ############
-%packages --excludedocs --nobase
+%packages
 -*-firmware
 -NetworkManager
 -b43-openfwwf
@@ -108,7 +112,6 @@ setroubleshoot
 socat
 tomcat
 tuned
-vconfig
 vim
 virt-manager
 virt-top
@@ -126,6 +129,10 @@ services --enabled=network,acpid,ntpd,sshd,cloud-init,cloud-init-local,cloud-con
 ######################
 %post --erroronfail
 
+# Ensure all packages are up to date
+yum -y update
+yum -y clean all
+
 # Remove some packages
 yum -C -y remove authconfig NetworkManager linux-firmware --setopt="clean_requirements_on_remove=1"
 
@@ -135,17 +142,17 @@ yum --enablerepo=epel -y install sshpass mysql-connector-python
 # Install pip
 curl "https://bootstrap.pypa.io/get-pip.py" | python
 
-# set eth0 to recover from dhcp errors
+# Set eth0 to recover from dhcp errors
 echo PERSISTENT_DHCLIENT="1" >> /etc/sysconfig/network-scripts/ifcfg-eth0
 
-# set virtual-guest as default profile for tuned
+# Set virtual-guest as default profile for tuned
 echo "virtual-guest" > /etc/tune-profiles/active-profile
 
-# no zeroconf
+# No zeroconf
 echo NOZEROCONF=yes >> /etc/sysconfig/network
 echo NETWORKING=yes >> /etc/sysconfig/network
 
-# remove existing SSH keys - if generated - as they need to be unique
+# Remove existing SSH keys - if generated - as they need to be unique
 rm -rf /etc/ssh/*key*
 # the MAC address will change
 sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
@@ -158,76 +165,4 @@ rm -f /var/lib/random-seed
 grubby --update-kernel=ALL --args="crashkernel=0@0 video=1024x768 console=ttyS0,115200n8 console=tty0 consoleblank=0"
 grubby --update-kernel=ALL --remove-args="quiet rhgb"
 
-cat << EOF > /etc/cloud/cloud.cfg.d/99_cloudstack.cfg
-datasource:
-  CloudStack: {}
-  None: {}
-datasource_list:
-  - CloudStack
-EOF
-
-cat > /etc/cloud/cloud.cfg << "EOF"
-users:
- - default
-
-disable_root: 0
-ssh_pwauth:   1
-
-locale_configfile: /etc/sysconfig/i18n
-mount_default_fields: [~, ~, 'auto', 'defaults,nofail', '0', '2']
-resize_rootfs_tmp: /dev
-resize_rootfs: noblock
-ssh_deletekeys:   0
-ssh_genkeytypes:  ~
-syslog_fix_perms: ~
-
-cloud_init_modules:
- - migrator
- - bootcmd
- - write-files
- - growpart
- - resizefs
- - set_hostname
- - update_hostname
- - update_etc_hosts
- - rsyslog
- - users-groups
- - ssh
-
-cloud_config_modules:
- - mounts
- - locale
- - set-passwords
- - yum-add-repo
- - package-update-upgrade-install
- - timezone
- - puppet
- - chef
- - salt-minion
- - mcollective
- - disable-ec2-metadata
- - runcmd
-
-cloud_final_modules:
- - rightscale_userdata
- - scripts-per-once
- - scripts-per-boot
- - scripts-per-instance
- - scripts-user
- - ssh-authkey-fingerprints
- - keys-to-console
- - phone-home
- - final-message
-
-system_info:
-  default_user:
-    name: root
-  distro: rhel
-  paths:
-    cloud_dir: /var/lib/cloud
-    templates_dir: /etc/cloud/templates
-  ssh_svcname: sshd
-
-# vim:syntax=yaml
-EOF
 %end
