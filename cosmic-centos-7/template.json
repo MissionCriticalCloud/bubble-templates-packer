@@ -30,7 +30,7 @@
             "ssh_username": "root",
             "ssh_password": "password",
             "ssh_port": 22,
-            "vm_name": "centos7",
+            "vm_name": "cosmic-centos-7.qcow2",
             "net_device": "virtio-net",
             "disk_interface": "virtio-scsi",
             "disk_cache": "unsafe",
