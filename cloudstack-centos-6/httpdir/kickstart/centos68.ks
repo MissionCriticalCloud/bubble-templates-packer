@@ -13,10 +13,10 @@ timezone --utc GMT
 ################
 # REPOSITORIES #
 ################
-repo --name=os --mirrorlist http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra
-repo --name=updates --mirrorlist http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
-repo --name=extras --mirrorlist http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra
-eula --agreed
+repo --name=os --mirrorlist=http://mirrorlist.centos.org/?release=6&arch=x86_64&repo=os
+repo --name=updates --mirrorlist=http://mirrorlist.centos.org/?release=6&arch=x86_64&repo=updates
+repo --name=extras --mirrorlist=http://mirrorlist.centos.org/?release=6&arch=x86_64&repo=extras
+
 
 ######################
 # FIREWALL / SELINUX #
@@ -47,31 +47,59 @@ bootloader --location=mbr --driveorder=vda --append="console=ttyS0,115200"
 # PACKAGES #
 ############
 %packages
-tomcat6
-mkisofs
-python-paramiko
-jakarta-commons-daemon-jsvc
-jsvc
-ws-commons-util
-genisoimage
-gcc
-python
+@core
 MySQL-python
-openssh-clients
-wget
-git
+acpid
+at
+bind-utils
+binutils
 bzip2
-python-setuptools
+cloud-init
+curl
+deltarpm
+dstat
+gcc
+genisoimage
+git
+git
+iotop
+ipset
+iptraf-ng
+jakarta-commons-daemon-jsvc
+java-1.7.0-openjdk-devel.x86_64
+jsvc
+lsof
+mc
+mkisofs
+mtr
 mysql
 mysql-server
-python-devel
-vim
+net-tools
 nfs-utils
+nmap
+ntp
+openssh-askpass
+openssh-clients
+pciutils
+policycoreutils
+policycoreutils-python
+python
+python-devel
+python-paramiko
+python-setuptools
+redhat-lsb-core
+rpm-build
+rsync
 screen
 setroubleshoot
-openssh-askpass
-java-1.7.0-openjdk-devel.x86_64
-rpm-build
+strace
+tcpdump
+tomcat6
+unzip
+uuid
+vim
+wget
+ws-commons-util
 %end
 
 ############
