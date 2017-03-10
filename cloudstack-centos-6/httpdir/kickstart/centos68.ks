@@ -22,7 +22,7 @@ repo --name=extras --mirrorlist=http://mirrorlist.centos.org/?release=6&arch=x86
 # FIREWALL / SELINUX #
 ######################
 firewall --disabled
-selinux --enforcing
+selinux --disabled
 
 #################
 # ROOT PASSWORD #
@@ -54,7 +54,6 @@ at
 bind-utils
 binutils
 bzip2
-cloud-init
 curl
 deltarpm
 dstat
@@ -64,7 +63,6 @@ git
 git
 iotop
 ipset
-iptraf-ng
 jakarta-commons-daemon-jsvc
 java-1.7.0-openjdk-devel.x86_64
 jsvc
@@ -78,6 +76,7 @@ net-tools
 nfs-utils
 nmap
 ntp
+openssh-server
 openssh-askpass
 openssh-clients
 pciutils
