@@ -53,6 +53,15 @@
             "destination": "/etc/cloud/cloud.cfg.d/99_cloudstack.cfg"
         },
         {
+            "type": "file",
+            "source": "files/10_cloud-set-guest-password",
+            "destination": "/var/lib/cloud/scripts/per-boot/10_cloud-set-guest-password"
+        },
+        {
+            "type": "shell",
+            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10_cloud-set-guest-password"]
+        },
+        {
             "type": "shell",
             "inline": [
                 "fstrim -v /"
