@@ -1,0 +1,63 @@
+{
+    "builders": [
+        {
+            "type": "qemu",
+            "iso_url": "http://ftp.tudelft.nl/centos.org/6.8/isos/x86_64/CentOS-6.8-x86_64-minimal.iso",
+            "iso_checksum": "ec49c297d484b9da0787e5944edc38f7c70f21c0f6a60178d8e9a8926d1949f4",
+            "iso_checksum_type": "sha256",
+            "output_directory": "packer_output",
+            "ssh_wait_timeout": "1440m",
+            "shutdown_command": "poweroff",
+            "disk_size": "8192",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "headless": "true",
+            "qemuargs": [
+                [
+                    "-smp",
+                    "4"
+                ],
+                [
+                    "-m",
+                    "1024M"
+                ]
+            ],
+            "http_directory": "httpdir",
+            "http_port_min": 10082,
+            "http_port_max": 10089,
+            "ssh_host_port_min": 2222,
+            "ssh_host_port_max": 2229,
+            "ssh_username": "root",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "vm_name": "cloudstack-centos-6.qcow2",
+            "net_device": "virtio-net",
+            "disk_interface": "virtio-scsi",
+            "disk_cache": "unsafe",
+            "disk_discard": "unmap",
+            "disk_compression": true,
+            "boot_command": [
+                "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/centos68.ks<enter><wait>"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "scripts/packages.sh",
+                "scripts/cleanup.sh"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "files/cloud.cfg",
+            "destination": "/etc/cloud/cloud.cfg"
+        },
+        {
+            "type": "file",
+            "source": "files/99_cloudstack.cfg",
+            "destination": "/etc/cloud/cloud.cfg.d/99_cloudstack.cfg"
+        }
+    ]
+}
