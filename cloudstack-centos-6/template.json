@@ -50,6 +50,10 @@
             ]
         },
         {
+            "type": "shell",
+            "inline": [ "mkdir -p /etc/cloud/cloud.cfg.d" ]
+        },
+        {
             "type": "file",
             "source": "files/cloud.cfg",
             "destination": "/etc/cloud/cloud.cfg"
