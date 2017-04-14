@@ -5,9 +5,9 @@ set -x
 yum install -y cloud-init
 
 # CloudStack 4.4.4
-wget https://github.com/schubergphilis/cloudstack/releases/download/4.4.4/cloudstack-awsapi-4.4.4-1.el6.x86_64.rpm 
-wget https://github.com/schubergphilis/cloudstack/releases/download/4.4.4/cloudstack-common-4.4.4-1.el6.x86_64.rpm
-wget https://github.com/schubergphilis/cloudstack/releases/download/4.4.4/cloudstack-management-4.4.4-1.el6.x86_64.rpm 
+wget https://github.com/schubergphilis/cloudstack/releases/download/cloudstack-4.4.4-20170414/cloudstack-awsapi-4.4.4-1.el6.x86_64.rpm
+wget https://github.com/schubergphilis/cloudstack/releases/download/cloudstack-4.4.4-20170414/cloudstack-common-4.4.4-1.el6.x86_64.rpm
+wget https://github.com/schubergphilis/cloudstack/releases/download/cloudstack-4.4.4-20170414/cloudstack-management-4.4.4-1.el6.x86_64.rpm
 yum -y localinstall cloudstack-*
 
 # VHD-util dependency for XenServer and CloudStack 4.4.4
