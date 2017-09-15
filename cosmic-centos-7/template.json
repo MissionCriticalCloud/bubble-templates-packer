@@ -49,17 +49,17 @@
         },
         {
             "type": "file",
-            "source": "files/99_cloudstack.cfg",
-            "destination": "/etc/cloud/cloud.cfg.d/99_cloudstack.cfg"
+            "source": "files/10-cloud-set-guest-password",
+            "destination": "/var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"
         },
         {
             "type": "file",
-            "source": "files/10_cloud-set-guest-password",
-            "destination": "/var/lib/cloud/scripts/per-boot/10_cloud-set-guest-password"
+            "source": "files/99-cloudstack.cfg",
+            "destination": "/etc/cloud/cloud.cfg.d/99-cloudstack.cfg"
         },
         {
             "type": "shell",
-            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10_cloud-set-guest-password"]
+            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
         },
         {
             "type": "shell",

@@ -152,6 +152,10 @@ echo "virtual-guest" > /etc/tune-profiles/active-profile
 echo NOZEROCONF=yes >> /etc/sysconfig/network
 echo NETWORKING=yes >> /etc/sysconfig/network
 
+# Don't let cloud-init handle networking
+mkdir -p /etc/cloud/cloud.cfg.d
+echo "network: {config: disabled}" > /etc/cloud/cloud.cfg.d/10-disable-network-config.cfg
+
 # Remove existing SSH keys - if generated - as they need to be unique
 rm -rf /etc/ssh/*key*
 # the MAC address will change
