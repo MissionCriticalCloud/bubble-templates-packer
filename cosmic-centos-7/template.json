@@ -37,7 +37,7 @@
             "disk_discard": "unmap",
             "disk_compression": true,
             "boot_command": [
-                "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/centos73.ks<enter><wait>"
+                "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/centos7.ks<enter><wait>"
             ]
         }
     ],
