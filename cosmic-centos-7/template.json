@@ -43,9 +43,12 @@
     ],
     "provisioners": [
         {
-            "type": "file",
-            "source": "files/cloud.cfg",
-            "destination": "/etc/cloud/cloud.cfg"
+            "type": "shell",
+            "inline": ["yum install -y cloud-init cloud-utils-growpart"]
+        },
+        {
+            "type": "shell",
+            "inline": ["mkdir -p /var/lib/cloud/scripts/per-boot/"]
         },
         {
             "type": "file",
@@ -53,13 +56,18 @@
             "destination": "/var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"
         },
         {
+            "type": "shell",
+            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
+        },
+        {
+            "type": "file",
+            "source": "files/cloud.cfg",
+            "destination": "/etc/cloud/cloud.cfg"
+        },
+        {
             "type": "file",
             "source": "files/99-cloudstack.cfg",
             "destination": "/etc/cloud/cloud.cfg.d/99-cloudstack.cfg"
-        },
-        {
-            "type": "shell",
-            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
         },
         {
             "type": "shell",

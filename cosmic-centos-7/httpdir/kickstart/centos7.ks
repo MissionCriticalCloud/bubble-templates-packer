@@ -64,8 +64,6 @@ MySQL-python
 acpid
 bridge-utils
 bzip2
-cloud-init
-cloud-utils-growpart
 dracut-config-generic
 ebtables
 epel-release
