@@ -7,4 +7,4 @@
     - vars/interfaces.yml
   roles:
     - kvm-prepare
-    - kvm-configure-network
+    - kvm-prepare-network
