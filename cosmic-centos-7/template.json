@@ -11,6 +11,7 @@
             "format": "qcow2",
             "accelerator": "kvm",
             "headless": "true",
+            "qemu_binary": "/usr/libexec/qemu-kvm",
             "qemuargs": [
                 [
                     "-smp",
