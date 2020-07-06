@@ -113,14 +113,6 @@
     state: 'directory'
     mode: '755'
 
-- name: mount NFS /data from bubble host
-  mount:
-    path: /data
-    src: 192.168.22.1:/data
-    opts: 'rw,hard,intr,rsize=8192,wsize=8192,timeo=14'
-    state: mounted
-    fstype: nfs
-
 - name: Set timezone to Europe/Amsterdam
   timezone:
     name: Europe/Amsterdam
@@ -130,11 +122,6 @@
     name: rpcbind
     state: started
     enabled: yes
-
-- name: upgrade all packages
-  yum:
-    name: '*'
-    state: latest
 
 - name: Install a list of packages
   yum:
@@ -184,10 +171,6 @@
     line: 'vnc_listen\1'
     backrefs: yes
 
-- name: Get file info on bash_history file
-  stat:
-    path: /root/.bash_history
-  register: bash_history
 - name: Prefill bash history root user
   copy:
     dest: /root/.bash_history
@@ -196,7 +179,6 @@
       less /var/log/cosmic/management/management.log
       systemctl restart cosmic-agent.service
       less /var/log/cosmic/agent/agent.log
-  when: not bash_history.stat.exists
 
 - name: Create .ssh directory for root
   file:
