@@ -1,0 +1,42 @@
+bond:
+  interfaces: "{{ ansible_interfaces | select('match', '^em|^eno|^eth|^p2') | list }}"
+
+interfaces:
+  default:
+    onboot: yes
+    netboot: yes
+    ipv6init: no
+    bootproto: none
+    mtu: 1600
+
+  podbr0:
+    onboot: yes
+    devicetype: ovs
+    type: OVSBridge
+    bootproto: dhcp
+    ovs_extra: "set Interface $DEVICE mtu_request=1600"
+    mtu: 1600
+
+  cloud0:
+    onboot: yes
+    devicetype: ovs
+    type: OVSBridge
+    ipaddr: 169.254.0.1
+    netmask: 255.255.0.0
+    bootproto: static
+
+  bond0:
+    onboot: yes
+    devicetype: ovs
+    type: OVSBond
+    ovs_bridge: podbr0
+    bootproto: none
+    mtu: 1600
+
+  pubbr0:
+    onboot: yes
+    devicetype: ovs
+    type: OVSBridge
+    ovs_options: "podbr0 50"
+    mtu: 1500
+    bootproto: none

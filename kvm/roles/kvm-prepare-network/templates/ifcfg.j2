@@ -1,0 +1,46 @@
+{% if item.value.macaddr is defined %}
+{%   set macaddr = item.value.macaddr %}
+{% elif item.value.type is defined and "podbr0" in item.key and bond.macaddr is defined %}
+{%   set macaddr = bond.macaddr %}
+{% endif %}
+DEVICE={{ item.key }}
+{% if item.value.devicetype is defined %}
+DEVICETYPE={{ item.value.devicetype }}
+{% endif %}
+{% if item.value.type is defined %}
+TYPE={{ item.value.type }}
+{% endif %}
+ONBOOT={{ item.value.onboot }}
+{% if item.value.netboot is defined %}
+NETBOOT={{ item.value.netboot }}
+{% endif %}
+HOTPLUG=no
+{% if item.value.ipv6init is defined %}
+IPV6INIT={{ item.value.ipv6init }}
+{% endif %}
+BOOTPROTO={{ item.value.bootproto }}
+NM_CONTROLLED=no
+{% if item.value.mtu is defined %}
+MTU={{ item.value.mtu }}
+{% endif %}
+{% if item.value.ipaddr is defined %}
+IPADDR={{ item.value.ipaddr }}
+{% endif %}
+{% if item.value.netmask is defined %}
+NETMASK={{ item.value.netmask }}
+{% endif %}
+{% if item.value.ovs_bridge is defined %}
+OVS_BRIDGE={{ item.value.ovs_bridge }}
+{% endif %}
+{% if item.value.type is defined and "bond0" in item.key %}
+BOND_IFACES="{{ item.value.bond_ifaces | default(bond.interfaces) | join(' ') }}"
+{% endif %}
+{% if macaddr is defined %}
+MACADDR={{ macaddr }}
+{% endif %}
+{% if item.value.ovs_options is defined %}
+OVS_OPTIONS="{{ item.value.ovs_options }}"
+{% endif %}
+{% if item.value.ovs_extra is defined %}
+OVS_EXTRA="{{ item.value.ovs_extra }}"
+{% endif %}

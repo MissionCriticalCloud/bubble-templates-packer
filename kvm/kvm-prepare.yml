@@ -1,0 +1,10 @@
+---
+
+- name: 'Provision kvm image'
+  hosts: default
+  become: true
+  vars_files:
+    - vars/interfaces.yml
+  roles:
+    - kvm-prepare
+    - kvm-configure-network

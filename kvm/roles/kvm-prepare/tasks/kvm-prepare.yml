@@ -1,0 +1,215 @@
+---
+
+# This playbook depends on the following environment variable:
+# WORKING_DIR e.g.: /data/shared
+# DEBUG_KVM_STARTUP (0=disabled, 1=enabled)
+
+# TODO:
+# firstboot script:
+# #!/bin/bash
+# # Configure KVM Hypervisor with openvswitch and VXLAN (CentOS 7)
+# set -x
+# #
+# # Please install packages with the packer build: https://github.com/MissionCriticalCloud/bubble-templates-packer
+# #
+# 
+# # Bring the second nic down to avoid routing problems
+# ip link set dev eth1 down
+# 
+# # Disable selinux (for now...)
+# setenforce permissive
+# sed -i "/SELINUX=enforcing/c\SELINUX=permissive" /etc/selinux/config
+# 
+# # Disable firewall (for now..)
+# systemctl stop firewall
+# systemctl disable firewall
+# 
+# # FIXME
+# sleep 5
+# 
+# # Work-around situation where there is no ip address during firstboot
+# dhclient -v eth0
+# 
+# # Enable rpbind for NFS
+# systemctl enable rpcbind
+# systemctl start rpcbind
+# 
+# # NFS to mct box
+# mkdir -p /data
+# mount -t nfs 192.168.22.1:/data /data
+# echo "192.168.22.1:/data /data nfs rw,hard,intr,rsize=8192,wsize=8192,timeo=14 0 0" >> /etc/fstab
+# 
+# # Enable nesting
+# echo "options kvm_intel nested=1" >> /etc/modprobe.d/kvm-nested.conf
+# 
+# # Libvirtd parameters
+# echo 'listen_tls = 0' >> /etc/libvirt/libvirtd.conf
+# echo 'listen_tcp = 1' >> /etc/libvirt/libvirtd.conf
+# echo 'tcp_port = "16509"' >> /etc/libvirt/libvirtd.conf
+# echo 'mdns_adv = 0' >> /etc/libvirt/libvirtd.conf
+# echo 'auth_tcp = "none"' >> /etc/libvirt/libvirtd.conf
+# sed -i 's/#LIBVIRTD_ARGS/LIBVIRTD_ARGS/g' /etc/sysconfig/libvirtd
+# 
+# # qemu.conf parameters
+# sed -i -e 's/\#vnc_listen.*$/vnc_listen = "0.0.0.0"/g' /etc/libvirt/qemu.conf
+# 
+# ### OVS ###
+# yum install -y yum-utils
+# yum-config-manager --enablerepo=extras
+# yum install -y centos-release-openstack-train
+# yum install -y openvswitch
+# yum install -y centos-release-qemu-ev
+# yum update -y
+# 
+# # Start and enable OVS
+# systemctl enable openvswitch
+# systemctl start openvswitch
+# 
+# # Execute OVS commands on reboot
+# cat /data/shared/deploy/default/firstboot/configure_ovs.sh >> /etc/rc.d/rc.local
+# echo "chmod 644 /etc/rc.d/rc.local" >> /etc/rc.d/rc.local
+# echo "sync; sleep1" >> /etc/rc.d/rc.local
+# echo "/usr/sbin/reboot" >> /etc/rc.d/rc.local
+# 
+# # Run this once
+# chmod 755  /etc/rc.d/rc.local
+# 
+# ifup cloudbr0
+# 
+# timedatectl set-timezone CET
+# 
+# cat > /root/.bash_history <<EOL
+# systemctl restart cosmic-agent
+# less /var/log/cosmic/agent/agent.log
+# EOL
+# 
+# cat > /root/.ssh/config <<EOL
+# Host 169.254.*
+#     Port 3922
+#     IdentityFile /root/.ssh/id_rsa.cloud
+#     UserKnownHostsFile /dev/null
+#     StrictHostKeyChecking no
+# EOL
+# 
+# # Localstorage setup
+# pvcreate /dev/vdb
+# pvcreate /dev/vdc
+# 
+# vgcreate vg_vdb /dev/vdb
+# vgcreate vg_vdc /dev/vdc
+# 
+# # Reboot
+# reboot
+
+- name: Put SELinux in permissive mode, logging actions that would be blocked.
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Create data directory
+  file:
+    path: '/data'
+    owner: 'root'
+    state: 'directory'
+    mode: '755'
+
+- name: mount NFS /data from bubble host
+  mount:
+    path: /data
+    src: 192.168.22.1:/data
+    opts: 'rw,hard,intr,rsize=8192,wsize=8192,timeo=14'
+    state: mounted
+    fstype: nfs
+
+- name: Set timezone to Europe/Amsterdam
+  timezone:
+    name: Europe/Amsterdam
+
+- name: Start and enable rpcbind service
+  systemd:
+    name: rpcbind
+    state: started
+    enabled: yes
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: Install a list of packages
+  yum:
+    name: "{{ item }}"
+    state: 'present'
+  loop:
+    - centos-release-openstack-train
+    - openvswitch
+    - centos-release-qemu-ev
+
+- name: Start and enable OVS service
+  systemd:
+    name: openvswitch
+    state: started
+    enabled: yes
+
+- name: Libvirtd parameters for Cosmic
+  copy:
+    dest: /etc/libvirt/libvirtd.conf
+    content: |
+      listen_tls = 0
+      listen_tcp = 1
+      tcp_port = "16509"
+      mdns_adv = 0
+      auth_tcp = "none"
+
+- name: Enable nesting
+  copy:
+    dest: /etc/modprobe.d/kvm-nested.conf
+    content: |
+      options kvm_intel nested=1
+      options kvm_intel enable_shadow_vmcs=1
+      options kvm_intel enable_apicv=1
+      options kvm_intel ept=1
+
+- name: Enable LIBVIRTD_ARGS --listen
+  lineinfile:
+    path: /etc/sysconfig/libvirtd
+    regexp: '^#LIBVIRTD_ARGS(.*)$'
+    line: 'LIBVIRTD_ARGS\1'
+    backrefs: yes
+
+- name: Enable Qemu vnc_listen
+  lineinfile:
+    path: /etc/libvirt/qemu.conf
+    regexp: '^#vnc_listen(.*)$'
+    line: 'vnc_listen\1'
+    backrefs: yes
+
+- name: Get file info on bash_history file
+  stat:
+    path: /root/.bash_history
+  register: bash_history
+- name: Prefill bash history root user
+  copy:
+    dest: /root/.bash_history
+    content: |
+      systemctl restart tomcat.service
+      less /var/log/cosmic/management/management.log
+      systemctl restart cosmic-agent.service
+      less /var/log/cosmic/agent/agent.log
+  when: not bash_history.stat.exists
+
+- name: Create .ssh directory for root
+  file:
+    path: /root/.ssh
+    state: directory
+    mode: '0700'
+
+- name: create .ssh/config for access to the systemvms
+  copy:
+    dest: /root/.ssh/config
+    content: |
+      Host 169.254.*
+        Port 3922
+        IdentityFile /root/.ssh/id_rsa.cloud
+        UserKnownHostsFile /dev/null
+        StrictHostKeyChecking no

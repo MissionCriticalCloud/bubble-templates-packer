@@ -1,0 +1,33 @@
+---
+
+- name: Setting bond facts
+  set_fact:
+    bond_info: "{{ bond_info|default({}) | combine({item:interfaces.default}) }}"
+  loop: "{{ bond.interfaces }}"
+
+- name: Create bridge podbr0
+  shell: "ovs-vsctl --may-exist add-br {{ item }}"
+  loop:
+    - "podbr0"
+    - "cloud0"
+
+- name: Creating NVP integration bridge br-int
+  shell: |
+    ovs-vsctl -- --may-exist add-br br-int\
+          -- br-set-external-id br-int bridge-id br-int\
+          -- set bridge br-int other-config:disable-in-band=true\
+          -- set bridge br-int fail-mode=secure
+
+- name: Create ifcfg files for interfaces in bond
+  template:
+    src: ifcfg.j2
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.key }}"
+  with_dict: "{{ bond_info }}"
+
+- name: Remove default libvirt network
+  file:
+    path: "{{ item }}/default.xml"
+    state: absent
+  loop:
+    - '/etc/libvirt/qemu/networks'
+    - '/etc/libvirt/qemu/networks/autostart'

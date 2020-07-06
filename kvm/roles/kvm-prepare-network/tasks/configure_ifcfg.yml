@@ -1,0 +1,7 @@
+---
+  - name: Creating ifcfg files
+    template:
+      src: ifcfg.j2
+      dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.key }}"
+    when: item.key != 'default'
+    with_dict: "{{ interfaces }}"

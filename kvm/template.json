@@ -1,0 +1,49 @@
+{
+    "builders": [
+        {
+            "type": "qemu",
+            "iso_url": "https://beta-jenkins.mcc.schubergphilis.com/job/bubble-templates/job/packer-cron/lastSuccessfulBuild/artifact/cosmic-centos-7/packer_output/cosmic-centos-7.qcow2",
+            "iso_checksum": "file:https://beta-jenkins.mcc.schubergphilis.com/job/bubble-templates/job/packer-cron/lastSuccessfulBuild/artifact/cosmic-centos-7/packer_output/cosmic-centos-7.qcow2.md5",
+            "output_directory": "packer_output",
+            "ssh_wait_timeout": "15m",
+            "shutdown_command": "systemctl poweroff",
+            "disk_size": "8192",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "headless": "true",
+            "qemuargs": [
+                [
+                    "-smp",
+                    "4"
+                ],
+                [
+                    "-m",
+                    "1024M"
+                ]
+            ],
+            "ssh_host_port_min": 2222,
+            "ssh_host_port_max": 2229,
+            "ssh_username": "root",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "vm_name": "kvm.qcow2",
+            "net_device": "virtio-net",
+            "disk_interface": "virtio-scsi",
+            "disk_cache": "unsafe",
+            "disk_discard": "unmap",
+            "disk_compression": true
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "./kvm-prepare.yml"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "fstrim -v /"
+            ]
+        }
+    ]
+}
