@@ -4,6 +4,7 @@
   set_fact:
     bond_info: "{{ bond_info|default({}) | combine({item:interfaces.default}) }}"
   loop: "{{ bond.interfaces }}"
+  when: bond.interfaces|length > 1
 
 - name: Create bridge podbr0
   shell: "ovs-vsctl --may-exist add-br {{ item }}"
@@ -23,6 +24,7 @@
     src: ifcfg.j2
     dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.key }}"
   with_dict: "{{ bond_info }}"
+  when: bond.interfaces|length > 1
 
 - name: Remove default libvirt network
   file:
