@@ -3,6 +3,9 @@
 {% elif item.value.type is defined and "podbr0" in item.key and bond.macaddr is defined %}
 {%   set macaddr = bond.macaddr %}
 {% endif %}
+{% if item.value.name is defined %}
+NAME={{ item.value.name }}
+{% endif %}
 DEVICE={{ item.key }}
 {% if item.value.devicetype is defined %}
 DEVICETYPE={{ item.value.devicetype }}
@@ -33,7 +36,7 @@ NETMASK={{ item.value.netmask }}
 OVS_BRIDGE={{ item.value.ovs_bridge }}
 {% endif %}
 {% if item.value.type is defined and "bond0" in item.key %}
-BOND_IFACES="{{ item.value.bond_ifaces | default(bond.interfaces) | join(' ') }}"
+BOND_IFACES="{{ item.value.bond_ifaces }}"
 {% endif %}
 {% if macaddr is defined %}
 MACADDR={{ macaddr }}
