@@ -10,7 +10,7 @@ auth --enableshadow --passalgo=sha512
 text
 skipx
 reboot
-url --mirrorlist="http://mirrorlist.centos.org/?release=8&arch=x86_64&repo=BaseOS"
+repo --name=BaseOS --mirrorlist="http://mirrorlist.centos.org/?release=8&arch=x86_64&repo=BaseOS"
 repo --name=AppStream --mirrorlist="http://mirrorlist.centos.org/?release=8&arch=x86_64&repo=AppStream"
 logging --level=info
 
