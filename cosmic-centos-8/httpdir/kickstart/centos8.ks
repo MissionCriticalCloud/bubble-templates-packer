@@ -1,4 +1,3 @@
-install
 lang en_US.UTF-8
 keyboard us
 timezone UTC
@@ -112,6 +111,9 @@ Host *
   ForwardX11Trusted yes
 
 EOF
+
+rm -f /etc/motd.d/cockpit
+rm -f /etc/issue.d/cockpit.issue
 
 %end #%post
 
