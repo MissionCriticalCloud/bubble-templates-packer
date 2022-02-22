@@ -9,8 +9,7 @@ auth --enableshadow --passalgo=sha512
 text
 skipx
 reboot
-url --mirrorlist="http://mirrorlist.centos.org/?release=8&arch=x86_64&repo=BaseOS"
-repo --name="AppStream" --mirrorlist="http://mirrorlist.centos.org/?release=8&arch=x86_64&repo=AppStream"
+url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
 logging --level=info
 
 # set passwd
@@ -27,17 +26,15 @@ bootloader --location=mbr --append="crashkernel=auto rhgb quiet console=ttyS0,11
 @virtualization-host-environment
 @development
 @rpm-development-tools
-
 acpid
 bind-utils
-genisoimage
 genisoimage
 git
 java-1.8.0-openjdk-devel
 mariadb
 mariadb-server
 maven
-nc
+nmap-ncat
 network-scripts
 NetworkManager-ovs
 perl
@@ -46,8 +43,8 @@ python2
 python2-devel
 python2-PyMySQL
 python2-setuptools
-python3
-python3-devel
+python38
+python38-devel
 python3-libvirt
 python3-PyMySQL
 python3-setuptools
@@ -81,7 +78,7 @@ rm -rf /etc/ssh/*key*
 
 # the MAC address will change
 sed -i '/HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-sed -i '/UUID/d' /etc/sysconfig/network-scripts/ifcfg-eth0 
+sed -i '/UUID/d' /etc/sysconfig/network-scripts/ifcfg-eth0
 rm -f /var/lib/random-seed
 
 # Harden sshd, permit root login
