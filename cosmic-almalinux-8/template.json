@@ -1,54 +1,55 @@
 {
-    "builders": [
-        {
-            "type": "qemu",
-            "iso_url": "http://almalinux.mirror.liteserver.nl/8.5/isos/x86_64/AlmaLinux-8.5-x86_64-minimal.iso",
-            "iso_checksum": "fddb5646627aecc572127ecf0b5a3b2b6dd4435f1a1b5ad42013c7fa1bff8ca8",
-            "output_directory": "packer_output",
-            "ssh_wait_timeout": "15m",
-            "shutdown_command": "systemctl poweroff",
-            "disk_size": "8192",
-            "format": "qcow2",
-            "headless": "true",
-            "accelerator": "kvm",
-            "qemu_binary": "/usr/libexec/qemu-kvm",
-            "qemuargs": [
-                [
-                    "-smp",
-                    "4"
-                ],
-                [
-                    "-m",
-                    "2048M"
-                ]
+    "builders": [{
+        "type": "qemu",
+        "iso_url": "http://almalinux.mirror.liteserver.nl/8.6/isos/x86_64/AlmaLinux-8.6-x86_64-minimal.iso",
+        "iso_checksum": "29111d9539830359aecec69ac12cf0e407c7500ffd0b9c46598b15e5fe1f4847",
+        "output_directory": "packer_output",
+        "ssh_wait_timeout": "15m",
+        "shutdown_command": "systemctl poweroff",
+        "disk_size": "8192",
+        "format": "qcow2",
+        "headless": "true",
+        "accelerator": "kvm",
+        "qemu_binary": "/usr/libexec/qemu-kvm",
+        "qemuargs": [
+            [
+                "-smp",
+                "4"
             ],
-            "http_directory": "httpdir",
-            "http_port_min": 10082,
-            "http_port_max": 10089,
-            "host_port_min": 2222,
-            "host_port_max": 2229,
-            "ssh_username": "root",
-            "ssh_password": "password",
-            "ssh_port": 22,
-            "vm_name": "cosmic-centos-8.qcow2",
-            "net_device": "virtio-net",
-            "disk_interface": "virtio-scsi",
-            "disk_cache": "unsafe",
-            "disk_discard": "unmap",
-            "disk_compression": true,
-            "boot_command": [
-                "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/almalinux8.ks<enter><wait>"
+            [
+                "-m",
+                "2048M"
             ]
-        }
-    ],
-    "provisioners": [
-        {
+        ],
+        "http_directory": "httpdir",
+        "http_port_min": 10082,
+        "http_port_max": 10089,
+        "host_port_min": 2222,
+        "host_port_max": 2229,
+        "ssh_username": "root",
+        "ssh_password": "password",
+        "ssh_port": 22,
+        "vm_name": "cosmic-almalinux-8.qcow2",
+        "net_device": "virtio-net",
+        "disk_interface": "virtio-scsi",
+        "disk_cache": "unsafe",
+        "disk_discard": "unmap",
+        "disk_compression": true,
+        "boot_command": [
+            "<tab> inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/almalinux8.ks<enter><wait>"
+        ]
+    }],
+    "provisioners": [{
             "type": "shell",
-            "inline": ["yum install -y cloud-init cloud-utils-growpart"]
+            "inline": [
+                "yum install -y cloud-init cloud-utils-growpart"
+            ]
         },
         {
             "type": "shell",
-            "inline": ["mkdir -p /var/lib/cloud/scripts/per-boot/"]
+            "inline": [
+                "mkdir -p /var/lib/cloud/scripts/per-boot/"
+            ]
         },
         {
             "type": "file",
@@ -57,7 +58,9 @@
         },
         {
             "type": "shell",
-            "inline": ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
+            "inline": [
+                "chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"
+            ]
         },
         {
             "type": "file",
