@@ -1,8 +1,8 @@
 {
     "builders": [{
         "type": "qemu",
-        "iso_url": "http://almalinux.mirror.liteserver.nl/8.6/isos/x86_64/AlmaLinux-8.6-x86_64-minimal.iso",
-        "iso_checksum": "29111d9539830359aecec69ac12cf0e407c7500ffd0b9c46598b15e5fe1f4847",
+        "iso_url": "http://almalinux.mirror.liteserver.nl/8/isos/x86_64/AlmaLinux-8-latest-x86_64-minimal.iso",
+        "iso_checksum": "831a8c9323426b3c73e5a204c9494d90be076f755d6b0fcfb94c165f078aa947",
         "output_directory": "packer_output",
         "ssh_wait_timeout": "15m",
         "shutdown_command": "systemctl poweroff",
