@@ -5,4 +5,5 @@ set -x
 echo "Removing previous artifacts"
 rm -rf ./packer_output
 echo "Running Packer"
+packer init
 packer build template.pkr.hcl

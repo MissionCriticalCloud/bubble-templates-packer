@@ -9,7 +9,7 @@ auth --enableshadow --passalgo=sha512
 text
 skipx
 reboot
-url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
+url --url https://mirror.nl.leaseweb.net/rockylinux/10/BaseOS/x86_64/os/
 logging --level=info
 
 # set passwd
@@ -113,4 +113,3 @@ rm -f /etc/motd.d/cockpit
 rm -f /etc/issue.d/cockpit.issue
 
 %end #%post
-
