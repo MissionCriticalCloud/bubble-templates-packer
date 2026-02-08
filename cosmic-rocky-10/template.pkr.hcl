@@ -10,7 +10,7 @@ packer {
 source "qemu" "rocky-10" {
   accelerator      = "kvm"
   boot_command    = [
-    "<wait5><up><wait>e<wait><down>down><wait>",
+    "<wait5><up><wait>e<wait><down><down><wait>",
     "<end><wait> inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<f10>"
   ]
   disk_cache       = "unsafe"
