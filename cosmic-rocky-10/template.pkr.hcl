@@ -9,10 +9,11 @@ packer {
 
 source "qemu" "rocky-10" {
   accelerator      = "kvm"
-  boot_command    = [
-    "<wait5><up><wait>e<wait><down><down><wait>",
+  boot_wait        = "10s"
+  boot_command     = [
+    "<wait><up><wait>e<wait><down><down><wait>",
     "<end><wait>",
-    " inst.text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<f10>"
+    " inst.text console=ttyS0,115200n8 inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<f10>"
   ]
   disk_cache       = "unsafe"
   disk_compression = true
@@ -40,47 +41,47 @@ source "qemu" "rocky-10" {
   ssh_password     = "password"
   ssh_port         = 22
   ssh_username     = "root"
-  ssh_wait_timeout = "10m"
+  ssh_wait_timeout = "15m"
   vm_name          = "cosmic-rocky-10.qcow2"
 }
 
 build {
   sources = ["source.qemu.rocky-10"]
 
-  provisioner "shell" {
-    inline = ["yum install -y cloud-init cloud-utils-growpart"]
-  }
+  # provisioner "shell" {
+  #   inline = ["yum install -y cloud-init cloud-utils-growpart"]
+  # }
 
-  provisioner "shell" {
-    inline = ["mkdir -p /var/lib/cloud/scripts/per-boot/"]
-  }
+  # provisioner "shell" {
+  #   inline = ["mkdir -p /var/lib/cloud/scripts/per-boot/"]
+  # }
 
-  provisioner "file" {
-    destination = "/var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"
-    source      = "files/10-cloud-set-guest-password"
-  }
+  # provisioner "file" {
+  #   destination = "/var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"
+  #   source      = "files/10-cloud-set-guest-password"
+  # }
 
-  provisioner "shell" {
-    inline = ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
-  }
+  # provisioner "shell" {
+  #   inline = ["chmod +x /var/lib/cloud/scripts/per-boot/10-cloud-set-guest-password"]
+  # }
 
-  provisioner "file" {
-    destination = "/etc/cloud/cloud.cfg"
-    source      = "files/cloud.cfg"
-  }
+  # provisioner "file" {
+  #   destination = "/etc/cloud/cloud.cfg"
+  #   source      = "files/cloud.cfg"
+  # }
 
-  provisioner "file" {
-    destination = "/etc/cloud/cloud.cfg.d/99-cloudstack.cfg"
-    source      = "files/99-cloudstack.cfg"
-  }
+  # provisioner "file" {
+  #   destination = "/etc/cloud/cloud.cfg.d/99-cloudstack.cfg"
+  #   source      = "files/99-cloudstack.cfg"
+  # }
 
-  provisioner "file" {
-    destination = "/etc/my.cnf.d/cosmic.cnf"
-    source      = "files/cosmic.cnf"
-  }
+  # provisioner "file" {
+  #   destination = "/etc/my.cnf.d/cosmic.cnf"
+  #   source      = "files/cosmic.cnf"
+  # }
 
-  provisioner "shell" {
-    inline = ["fstrim -v /"]
-  }
+  # provisioner "shell" {
+  #   inline = ["fstrim -v /"]
+  # }
 
 }
