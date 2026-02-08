@@ -10,9 +10,8 @@ packer {
 source "qemu" "rocky-10" {
   accelerator      = "kvm"
   boot_command    = [
-    "c<wait5>",
-    "text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<enter>",
-    "<wait5><enter>"
+    "<wait5><up><wait>e<wait><down>down><wait>",
+    "<end><wait> inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<f10>"
   ]
   disk_cache       = "unsafe"
   disk_compression = true
@@ -26,6 +25,10 @@ source "qemu" "rocky-10" {
   http_directory   = "httpdir"
   http_port_max    = 10089
   http_port_min    = 10082
+  # AARCH
+  #iso_checksum     = "SHA256:8256689e8043a084da4ed0f1465d24d71ccbaa32b78db77c2efa82291b4e49b1"
+  #iso_url          = "https://mirror.nl.leaseweb.net/rockylinux/10/isos/aarch64/Rocky-10.1-aarch64-minimal.iso"
+  # x86_64
   iso_checksum     = "SHA256:5aafc2c86e606428cd7c5802b0d28c220f34c181a57eefff2cc6f65214714499"
   iso_url          = "https://mirror.nl.leaseweb.net/rockylinux/10/isos/x86_64/Rocky-10.1-x86_64-minimal.iso"
   net_device       = "virtio-net"
