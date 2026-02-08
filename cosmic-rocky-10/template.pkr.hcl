@@ -15,6 +15,7 @@ source "qemu" "rocky-10" {
     "<end><wait>",
     " inst.text console=ttyS0,115200n8 inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/rocky10.ks<f10>"
   ]
+  cpu_model        = "Skylake-Client-v2"
   disk_cache       = "unsafe"
   disk_compression = true
   disk_discard     = "unmap"
